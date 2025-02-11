@@ -45,14 +45,14 @@ export const checkCustomerStatus = createAsyncThunk(
 export const setCustomerSession = createAsyncThunk(
   'customer/setSession',
   async (customer: Customer) => {
-    localStorage.setItem('customerSession', JSON.stringify({
+    const session = {
       customerId: customer.id,
-      status: customer.status
-    }));
-    return {
-      customerId: customer.id,
+      accountId: customer.accountId,
       status: customer.status
     };
+
+    localStorage.setItem('customerSession', JSON.stringify(session));
+    return session;
   }
 );
 
