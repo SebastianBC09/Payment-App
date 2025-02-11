@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { CreateCustomerRequest, CustomerType } from '../../types/customer';
 import { CustomerSelect } from './CustomerSelect';
@@ -9,11 +9,21 @@ interface CustomerFormProps {
 }
 
 export const CustomerForm:FC<CustomerFormProps> = ({ onSubmit, isLoading }) => {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<CreateCustomerRequest>();
-  const customerType = watch('organizationType');
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<CreateCustomerRequest>({
+    defaultValues: {
+      organizationType: 'BUSINESS' as CustomerType
+    }
+  });
+
+  const organizationType = watch('organizationType');
+
+  const handleOrganizationChange = (value: CustomerType) => {
+    setValue('organizationType', value);
+  };
+
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)}  className="space-y-6">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Business Name
@@ -24,13 +34,11 @@ export const CustomerForm:FC<CustomerFormProps> = ({ onSubmit, isLoading }) => {
           placeholder="Enter your business name"
         />
       </div>
-
       <CustomerSelect
-        value={customerType as CustomerType}
-        onChange={(value) => register('organizationType').onChange({ target: { value } })}
+        value={organizationType}
+        onChange={handleOrganizationChange}
         error={errors.organizationType?.message}
       />
-
       <button
         type="submit"
         disabled={isLoading}
