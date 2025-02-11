@@ -3,17 +3,20 @@ import { CreateCustomerRequest, Customer, KycLinkResponse } from '../../types/cu
 
 export const customerService = {
   createCustomer: async (customerData: CreateCustomerRequest) => {
-    const response = await api.post<Customer>('/customers', customerData);
-    return response.data; // Now returns Customer directly
+    const response = await api.post<Customer>('/customers', {
+      name: customerData.name,
+      organizationType: customerData.organizationType
+    });
+    return response.data;
   },
 
   getCustomerStatus: async (customerId: string) => {
     const response = await api.get<Customer>(`/customers/${customerId}`);
-    return response.data; // Now returns Customer directly
+    return response.data;
   },
 
   getKycLink: async (customerId: string) => {
     const response = await api.get<KycLinkResponse>(`/customers/${customerId}/kyc-link`);
-    return response.data; // Now returns KycLinkResponse directly
+    return response.data;
   }
 };
