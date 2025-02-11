@@ -14,10 +14,25 @@ const initialState: AccountState = {
   error: null,
 };
 
+export const isAccountAddressPending = (account: Account | null) => {
+  return account?.address === "PENDING" || account?.isPending;
+};
+
 export const fetchAccount = createAsyncThunk(
   'account/fetch',
   async (accountId: string) => {
     const account = await accountService.getAccount(accountId);
+    return account;
+  }
+);
+
+export const pollAccountAddress = createAsyncThunk(
+  'account/pollAddress',
+  async (accountId: string) => {
+    const account = await accountService.getAccount(accountId);
+    if (isAccountAddressPending(account)) {
+      throw new Error('Address still pending');
+    }
     return account;
   }
 );
