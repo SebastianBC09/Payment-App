@@ -30,7 +30,11 @@ const AccountCreation:FC = () => {
 
   useEffect(() => {
     if (customer?.status === 'COMPLETE') {
-      dispatch(setCustomerSession(customer));
+      dispatch(setCustomerSession({
+        customerId: customer.id,
+        accountId: '',
+        status: customer.status
+      }));
       navigate('/account');
     }
   }, [customer, navigate, dispatch]);

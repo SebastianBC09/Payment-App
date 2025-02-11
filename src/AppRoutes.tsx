@@ -6,7 +6,6 @@ import AccountCreation from './pages/AccountCreation';
 import AccountDashboard from './pages/AccountDashboard';
 import TransferPage from './pages/TransferPage';
 import TransactionsPage from './pages/TransactionsPage';
-import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { setCustomerSession } from './store/slices/customerSlice';
 import { fetchAccount } from './store/slices/accountSlice';
 

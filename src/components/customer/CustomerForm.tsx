@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import { useForm } from 'react-hook-form';
 import { CreateCustomerRequest, CustomerType } from '../../types/customer';
 import { CustomerSelect } from './CustomerSelect';
