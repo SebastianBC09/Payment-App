@@ -1,14 +1,15 @@
-import { Navigate } from 'react-router';
+import { Navigate, useLocation } from 'react-router';
 import { useAppSelector } from '../../store/hooks';
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-}
+export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { session } = useAppSelector(state => state.customer);
+  const location = useLocation();
 
-export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { customer } = useAppSelector(state => state.customer);
+  if (!session) {
+    return <Navigate to="/create-account" replace state={{ from: location }} />;
+  }
 
-  if (!customer) {
+  if (session.status !== 'COMPLETE') {
     return <Navigate to="/create-account" replace />;
   }
 
