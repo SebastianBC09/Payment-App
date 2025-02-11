@@ -3,22 +3,26 @@ import { Link } from 'react-router'
 
 const Header:FC = () => {
   return (
-    <header className='border-b'>
-      <nav className='container mx-auto px-4 py-4'>
-        <ul className='flex gap-4'>
-          <li>
-            <Link to="/" className='hover:text-primary'>Account Creation</Link>
-          </li>
-          <li>
-            <Link to="/transfer" className='hover:text-primary'>Transfer Request</Link>
-          </li>
-          <li>
-            <Link to="/transactions" className='hover:text-primary'>Transactions</Link>
-          </li>
-        </ul>
-      </nav>
+    <header className="bg-white w-full">
+      <div className="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+        <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+          MuralPay
+        </Link>
+
+        <nav className="flex gap-8">
+          <Link to="/" className="text-gray-600 hover:text-blue-600">
+            Account
+          </Link>
+          <Link to="/transfer" className="text-gray-600 hover:text-blue-600">
+            Transfer
+          </Link>
+          <Link to="/transactions" className="text-gray-600 hover:text-blue-600">
+            Transactions
+          </Link>
+        </nav>
+      </div>
     </header>
-  )
+  );
 }
 
 export default Header
