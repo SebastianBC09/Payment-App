@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-//TODO IMPORT REDUCERS
+import customerReducer from './slices/customerSlice';
 
 export const store = configureStore({
   reducer: {
     customer: customerReducer,
-    account: accountReducer,
-    transfer: transferReducer,
+    // account: accountReducer,
+    // transfer: transferReducer,
   },
 });
 
-export type RootType = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch =typeof store.dispatch;
