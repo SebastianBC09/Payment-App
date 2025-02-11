@@ -12,9 +12,9 @@ export const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if(token){
-      config.headers.Authorization = `Bearer ${token}`
+    const apiKey = import.meta.env.VITE_MURAL_API_KEY;
+    if(apiKey){
+      config.headers.Authorization = `Bearer ${apiKey}`
     }
     return config
   },
