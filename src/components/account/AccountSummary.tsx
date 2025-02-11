@@ -4,8 +4,8 @@ import { fetchAccount } from "../../store/slices/accountSlice";
 
 export const AccountSummary = () => {
   const dispatch = useAppDispatch();
-  const { account, status } = useAppSelector((state) => state.customer);
   const { session } = useAppSelector((state) => state.customer);
+  const { account, status } = useAppSelector((state) => state.account);
 
   useEffect(() => {
     if (session?.customerId) {
