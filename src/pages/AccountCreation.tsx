@@ -26,13 +26,19 @@ const AccountCreation:FC = () => {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Create Business Account</h1>
+      <div className="bg-gradient-to-r from-blue-600 to-blue-400 card text-white mb-8">
+        <h1 className="text-3xl font-bold">Welcome to MuralPay</h1>
+        <p className="mt-2 opacity-90">Create your account to start making global payments</p>
+      </div>
 
-      {!customer ? (
-        <CustomerForm onSubmit={handleSubmit} isLoading={status === 'loading'} />
-      ) : (
-        <CustomerStatus customer={customer} kycLink={kycLink} />
-      )}
+      <div className="card">
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Account Details</h2>
+        {!customer ? (
+          <CustomerForm onSubmit={handleSubmit} isLoading={status === 'loading'} />
+        ) : (
+          <CustomerStatus customer={customer} kycLink={kycLink} />
+        )}
+      </div>
     </div>
   );
 };
