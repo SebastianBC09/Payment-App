@@ -1,13 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { customerService } from "../../services/api/customerService"
-import { CreateCustomerRequest, Customer } from "../../types/customer"
+import { CreateCustomerRequest, Customer, CustomerSession } from "../../types/customer"
 import { ApiError } from "../../types/api";
 
 interface CustomerState {
   customer: Customer | null;
   kycLink: string | null;
-  status: 'idle' | 'loading' | 'failed';
+  status: 'idle' | 'loading' | 'polling' | 'failed';
   error: string | null;
+  session: CustomerSession | null;
 }
 
 const initialState: CustomerState = {
@@ -15,6 +16,7 @@ const initialState: CustomerState = {
   kycLink: null,
   status: 'idle',
   error: null,
+  session: null,
 }
 
 export const createCustomer = createAsyncThunk<
@@ -24,11 +26,11 @@ export const createCustomer = createAsyncThunk<
   'customer/create',
   async (data: CreateCustomerRequest) => {
     const customer = await customerService.createCustomer(data);
-    const kycLinkData = await customerService.getKycLink(customer.id);
+    const kycLinkResponse = await customerService.getKycLink(customer.id);
     return {
       customer,
-      kycLink: kycLinkData.kycLink
-    }
+      kycLink: kycLinkResponse.kycLink,
+    };
   }
 );
 
@@ -40,21 +42,30 @@ export const checkCustomerStatus = createAsyncThunk(
   }
 );
 
+export const setCustomerSession = createAsyncThunk(
+  'customer/setSession',
+  async (customer: Customer) => {
+    localStorage.setItem('customerSession', JSON.stringify({
+      customerId: customer.id,
+      status: customer.status
+    }));
+    return {
+      customerId: customer.id,
+      status: customer.status
+    };
+  }
+);
+
 const customerSlice = createSlice({
   name: 'customer',
   initialState,
   reducers: {
-    resetCustomer:(state) => {
-      state.customer = null;
-      state.kycLink = null;
-      state.status = 'idle';
-      state.error = null
-    },
+    resetCustomer: () => initialState
   },
   extraReducers: (builder) => {
     builder
       .addCase(createCustomer.pending, (state) => {
-        state.status = 'loading'
+        state.status = 'loading';
       })
       .addCase(createCustomer.fulfilled, (state, action) => {
         state.status = 'idle';
@@ -68,11 +79,12 @@ const customerSlice = createSlice({
       })
       .addCase(checkCustomerStatus.fulfilled, (state, action) => {
         if (state.customer) {
-          state.customer = action.payload
+          state.customer = action.payload;
         }
       });
   },
-})
+});
+
 
 export const { resetCustomer } = customerSlice.actions;
 export default customerSlice.reducer;
