@@ -44,13 +44,7 @@ export const checkCustomerStatus = createAsyncThunk(
 
 export const setCustomerSession = createAsyncThunk(
   'customer/setSession',
-  async (customer: Customer) => {
-    const session = {
-      customerId: customer.id,
-      accountId: customer.accountId,
-      status: customer.status
-    };
-
+  async (session: CustomerSession) => {
     localStorage.setItem('customerSession', JSON.stringify(session));
     return session;
   }
@@ -81,10 +75,13 @@ const customerSlice = createSlice({
         if (state.customer) {
           state.customer = action.payload;
         }
-      });
+      })
+      .addCase(setCustomerSession.fulfilled, (state, action) => {
+      state.session = action.payload;
+      state.status = 'idle';
+    });
   },
 });
-
 
 export const { resetCustomer } = customerSlice.actions;
 export default customerSlice.reducer;
