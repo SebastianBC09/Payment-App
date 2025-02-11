@@ -9,7 +9,10 @@ export const CUSTOMER_STATUSES = [
   'REJECTED'
 ] as const;
 export type CustomerStatus = typeof CUSTOMER_STATUSES[number];
-
+export interface CustomerSession {
+  customerId: string;
+  status: CustomerStatus;
+}
 interface BaseCustomer {
   id: string;
   createdAt: string;
