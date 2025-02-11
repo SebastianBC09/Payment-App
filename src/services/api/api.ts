@@ -1,6 +1,7 @@
 import axios from "axios";
+import { ApiError, ApiErrorType } from "../../types/api";
 
-const BASE_URL = 'https://api-staging.muralpay.com';
+const BASE_URL = 'https://api-staging.muralpay.com/api';
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -17,7 +18,5 @@ api.interceptors.request.use(
     }
     return config
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(new ApiError(ApiErrorType.Server, { originalError: error }))
 )
