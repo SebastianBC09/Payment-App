@@ -8,17 +8,21 @@ import { CreateCustomerRequest } from '../types/customer';
 
 const AccountCreation:FC = () => {
   const dispatch = useAppDispatch();
-  const { customer, kycLink, status } = useAppSelector((state) => state.customer);
+  const { customer, kycLink, status, error } = useAppSelector((state) => state.customer);
 
-  const handleSubmit = async (data: CreateCustomerRequest) => {
-    await dispatch(createCustomer(data)).unwrap();
+    const handleSubmit = async (data: CreateCustomerRequest) => {
+    try {
+      await dispatch(createCustomer(data)).unwrap();
+    } catch (err) {
+      console.error('Failed to create customer:', err);
+    }
   };
 
   useEffect(() => {
     if (customer?.id && customer.status === 'PENDING') {
       const interval = setInterval(() => {
         dispatch(checkCustomerStatus(customer.id));
-      }, 5000);
+      }, 10000);
 
       return () => clearInterval(interval);
     }
@@ -32,6 +36,12 @@ const AccountCreation:FC = () => {
       </div>
 
       <div className="card">
+        {error && (
+          <div className="mb-4 p-4 bg-red-50 text-red-700 rounded-lg">
+            {error}
+          </div>
+        )}
+
         <h2 className="text-xl font-semibold text-gray-900 mb-6">Account Details</h2>
         {!customer ? (
           <CustomerForm onSubmit={handleSubmit} isLoading={status === 'loading'} />
