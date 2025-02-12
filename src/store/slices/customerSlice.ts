@@ -1,12 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { customerService } from "../../services/api/customerService"
-import { CreateCustomerRequest, Customer, CustomerSession } from "../../types/customer"
-import { ApiError } from "../../types/api";
+import { BaseCustomer, CreateCustomerRequest, CustomerSession, CustomerWithAccount } from "../../types/customer"
 
 interface CustomerState {
-  customer: Customer | null;
+  customer: BaseCustomer | null;
   kycLink: string | null;
-  status: 'idle' | 'loading' | 'polling' | 'failed';
+  status: 'idle' | 'loading' | 'failed';
   error: string | null;
   session: CustomerSession | null;
 }
@@ -19,10 +18,7 @@ const initialState: CustomerState = {
   session: null,
 }
 
-export const createCustomer = createAsyncThunk<
-  { customer: Customer; kycLink: string },
-  CreateCustomerRequest,
-  { rejectValue: ApiError }>(
+export const createCustomer = createAsyncThunk(
   'customer/create',
   async (data: CreateCustomerRequest) => {
     const customer = await customerService.createCustomer(data);
@@ -34,19 +30,24 @@ export const createCustomer = createAsyncThunk<
   }
 );
 
-export const checkCustomerStatus = createAsyncThunk(
-  'customer/checkStatus',
-  async (customerId: string) => {
-    const customer = await customerService.getCustomerStatus(customerId);
-    return customer;
+export const setCustomerSession = createAsyncThunk(
+  'customer/setSession',
+  async (customer: BaseCustomer & { accountId: string }) => {
+    const session: CustomerSession = {
+      id: customer.id,
+      accountId: customer.accountId,
+      status: customer.status
+    };
+    localStorage.setItem('customerSession', JSON.stringify(session));
+    return session;
   }
 );
 
-export const setCustomerSession = createAsyncThunk(
-  'customer/setSession',
-  async (session: CustomerSession) => {
-    localStorage.setItem('customerSession', JSON.stringify(session));
-    return session;
+export const checkCustomerStatus = createAsyncThunk(
+  'customer/checkStatus',
+  async (id: string) => {
+    const customer = await customerService.getCustomerStatus(id);
+    return customer as CustomerWithAccount;
   }
 );
 
