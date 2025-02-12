@@ -1,28 +1,18 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchAccount } from "../../store/slices/accountSlice";
-import { checkCustomerStatus } from "../../store/slices/customerSlice";
-import { CustomerWithAccount } from "../../types/customer";
 
 export const AccountSummary = () => {
   const dispatch = useAppDispatch();
   const { account, status } = useAppSelector((state) => state.account);
-  const { session } = useAppSelector((state) => state.customer);
 
-    useEffect(() => {
-    if (session?.id) {
-      dispatch(checkCustomerStatus(session.id))
-        .unwrap()
-        .then((customer: CustomerWithAccount) => {
-          if (customer.accountId) {
-            dispatch(fetchAccount(customer.accountId));
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching customer status:', error);
-        });
+  useEffect(() => {
+    const accountInfo = localStorage.getItem('accountInfo');
+    if (accountInfo) {
+      const { accountId } = JSON.parse(accountInfo);
+      dispatch(fetchAccount(accountId));
     }
-  }, [dispatch, session?.id]);
+  }, [dispatch]);
 
   if (status === 'loading') {
     return (
