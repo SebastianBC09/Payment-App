@@ -1,12 +1,12 @@
-import { Navigate, useLocation } from 'react-router';
+import { Navigate } from 'react-router';
 import { useAppSelector } from '../../store/hooks';
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session } = useAppSelector(state => state.customer);
-  const location = useLocation();
+  const id  = session?.id
 
-  if (!session) {
-    return <Navigate to="/create-account" replace state={{ from: location }} />;
+  if (!id) {
+    return <Navigate to="/create-account" replace />;
   }
 
   if (session.status !== 'COMPLETE') {
