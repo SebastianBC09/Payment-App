@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router';
 import { CustomerForm } from '../components/customer/CustomerForm';
 import { CustomerStatus } from '../components/customer/CustomerStatus';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { checkCustomerStatus, createCustomer, setCustomerSession } from '../store/slices/customerSlice';
-import { CreateCustomerRequest } from '../types/customer';
+import { createCustomer, setCustomerSession } from '../store/slices/customerSlice';
+import { BaseCustomer, CreateCustomerRequest } from '../types/customer';
 
 const AccountCreation:FC = () => {
   const navigate = useNavigate();
@@ -20,21 +20,8 @@ const AccountCreation:FC = () => {
   };
 
   useEffect(() => {
-    if (customer?.id && customer.status === 'PENDING') {
-      const interval = setInterval(() => {
-        dispatch(checkCustomerStatus(customer.id));
-      }, 10000);
-      return () => clearInterval(interval);
-    }
-  }, [customer?.id, customer?.status, dispatch]);
-
-  useEffect(() => {
-    if (customer?.status === 'COMPLETE') {
-      dispatch(setCustomerSession({
-        customerId: customer.id,
-        accountId: '',
-        status: customer.status
-      }));
+    if (customer?.status === 'COMPLETE' && 'accountId' in customer) {
+      dispatch(setCustomerSession(customer as BaseCustomer & { accountId: string }));
       navigate('/account');
     }
   }, [customer, navigate, dispatch]);
