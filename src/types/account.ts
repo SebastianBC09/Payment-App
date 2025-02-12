@@ -5,6 +5,9 @@ interface AccountBalance {
   tokenSymbol: string;
 }
 
+export type AccountInfo = {
+  accountId: string;
+};
 export interface Account extends Pick<BaseCustomer, 'createdAt' | 'updatedAt' | 'name'> {
   id: string;
   address: string;
