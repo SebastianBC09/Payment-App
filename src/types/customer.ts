@@ -8,6 +8,9 @@ export const CUSTOMER_STATUSES = [
 
 export const CUSTOMER_TYPES = ['BUSINESS', 'INDIVIDUAL'] as const;
 
+export type CustomerStatus = typeof CUSTOMER_STATUSES[number];
+export type CustomerType = typeof CUSTOMER_TYPES[number];
+
 export interface BaseCustomer {
   id: string;
   createdAt: string;
@@ -17,15 +20,11 @@ export interface BaseCustomer {
   status: CustomerStatus;
 }
 
-export type CustomerStatus = typeof CUSTOMER_STATUSES[number];
-export type CustomerType = typeof CUSTOMER_TYPES[number];
 export type CustomerWithAccount = BaseCustomer & {
   accountId: string;
 };
 
-export type CustomerSession = Pick<BaseCustomer, 'id' | 'status'> & {
-  accountId: string;
-};
+export type CustomerSession = Pick<BaseCustomer, 'id' | 'status'>;
 
 export type CreateCustomerRequest = {
   name: string;
