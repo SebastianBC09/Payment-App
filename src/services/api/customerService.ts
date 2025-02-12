@@ -1,22 +1,22 @@
-import { api } from './api';
-import { CreateCustomerRequest, Customer, KycLinkResponse } from '../../types/customer';
+import { BaseCustomer, CreateCustomerRequest, KycLinkResponse } from "../../types/customer";
+import { api } from "./api";
 
 export const customerService = {
   createCustomer: async (customerData: CreateCustomerRequest) => {
-    const response = await api.post<Customer>('/customers', {
+    const response = await api.post<BaseCustomer>('/customers', {
       name: customerData.name,
       organizationType: customerData.organizationType
     });
     return response.data;
   },
 
-  getCustomerStatus: async (customerId: string) => {
-    const response = await api.get<Customer>(`/customers/${customerId}`);
+  getCustomerStatus: async (id: string) => {
+    const response = await api.get<BaseCustomer>(`/customers/${id}`);
     return response.data;
   },
 
-  getKycLink: async (customerId: string) => {
-    const response = await api.get<KycLinkResponse>(`/customers/${customerId}/kyc-link`);
+  getKycLink: async (id: string) => {
+    const response = await api.get<KycLinkResponse>(`/customers/${id}/kyc-link`);
     return response.data;
   }
 };
