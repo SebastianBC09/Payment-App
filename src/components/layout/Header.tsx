@@ -4,11 +4,11 @@ import { useAppSelector } from '../../store/hooks';
 
 const Header:FC = () => {
   const location = useLocation();
-  const { customer } = useAppSelector(state => state.customer);
+  const { session } = useAppSelector(state => state.customer);
 
-  const showNav = customer !== null;
+  const showNav = session !== null;
 
-    return (
+  return (
     <header className="bg-white w-full">
       <div className="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
         <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
