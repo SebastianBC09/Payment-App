@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { customerService } from "../../services/api/customerService"
 import { BaseCustomer, CreateCustomerRequest, CustomerSession, CustomerWithAccount } from "../../types/customer"
+import { AccountInfo } from "../../types/account";
 
 interface CustomerState {
   customer: BaseCustomer | null;
@@ -8,6 +9,7 @@ interface CustomerState {
   status: 'idle' | 'loading' | 'failed';
   error: string | null;
   session: CustomerSession | null;
+  accountInfo: AccountInfo | null;
 }
 
 const initialState: CustomerState = {
@@ -16,6 +18,7 @@ const initialState: CustomerState = {
   status: 'idle',
   error: null,
   session: null,
+  accountInfo: null
 }
 
 export const createCustomer = createAsyncThunk(
@@ -32,14 +35,21 @@ export const createCustomer = createAsyncThunk(
 
 export const setCustomerSession = createAsyncThunk(
   'customer/setSession',
-  async (customer: BaseCustomer & { accountId: string }) => {
+  async (customer: CustomerWithAccount) => {
     const session: CustomerSession = {
       id: customer.id,
-      accountId: customer.accountId,
       status: customer.status
     };
+
+    const accountInfo: AccountInfo = {
+      accountId: customer.accountId
+    };
     localStorage.setItem('customerSession', JSON.stringify(session));
-    return session;
+    localStorage.setItem('accountInfo', JSON.stringify(accountInfo));
+    return {
+      session,
+      accountInfo
+    };
   }
 );
 
@@ -78,8 +88,9 @@ const customerSlice = createSlice({
         }
       })
       .addCase(setCustomerSession.fulfilled, (state, action) => {
-      state.session = action.payload;
-      state.status = 'idle';
+        state.session = action.payload.session;
+        state.accountInfo = action.payload.accountInfo;
+        state.status = 'idle';
     });
   },
 });
