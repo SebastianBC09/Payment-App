@@ -15,11 +15,19 @@ function AppRoutes() {
 
   useEffect(() => {
     const savedSession = localStorage.getItem('customerSession');
-    if (savedSession) {
-      const session = JSON.parse(savedSession);
-      dispatch(setCustomerSession(session));
-      if (session.accountId) {
-        dispatch(fetchAccount(session.accountId));
+    const savedAccountInfo = localStorage.getItem('accountInfo');
+
+    if (savedSession && savedAccountInfo) {
+      const parsedSession = JSON.parse(savedSession);
+      const parsedAccountInfo = JSON.parse(savedAccountInfo);
+
+      dispatch(setCustomerSession({
+        ...parsedSession,
+        accountId: parsedAccountInfo.accountId
+      }));
+
+      if (parsedAccountInfo.accountId) {
+        dispatch(fetchAccount(parsedAccountInfo.accountId));
       }
     }
   }, [dispatch]);
